@@ -219,12 +219,12 @@ example= ping6 [dest] -s 73 */
 in /platform/avr-zigbit/contiki-conf.h */
 
 /*enable led blink when packet arrives, see tcpip.c, works only for ATANY-Module*/
-#define PACKET_BLINK_ZIGBIT_ENABLE
+//#define PACKET_BLINK_ZIGBIT_ENABLE
 
 
 //#define MAC_CONF_FREQUENCY 0x09 //900MHz
 #define MAC_CONF_FREQUENCY 0x24 //2400MHz
-#define MAC_CONF_NUMBER 0x01
+#define MAC_CONF_NUMBER 0x99
 
 /*
 #for using .sh-script initial value must

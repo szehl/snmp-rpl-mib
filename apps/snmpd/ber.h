@@ -54,12 +54,8 @@
 #define BER_TYPE_IPADDRESS                              0x40
 /** \brief counter type */
 #define BER_TYPE_COUNTER                                0x41
-/** \brief counter32 type */
-#define BER_TYPE_COUNTER32                              BER_TYPE_COUNTER
 /** \brief gauge type */
 #define BER_TYPE_GAUGE                                  0x42
-/** \brief unsigned32 type */
-#define BER_TYPE_UNSIGNED32                             BER_TYPE_GAUGE
 /** \brief time ticks type */
 #define BER_TYPE_TIME_TICKS				0x43
 /** \brief opaque type */

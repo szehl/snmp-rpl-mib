@@ -44,7 +44,7 @@
 /*sz*/
 /*Enable Printf() Debugging*/
 /** \brief Enable Printf() Debugging*/
-#define PDEBUG 0
+#define PDEBUG 1
 /*sz*/
 
 #define CHECK_STACK_SIZE 0

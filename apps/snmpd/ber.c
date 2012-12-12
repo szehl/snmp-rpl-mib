@@ -257,7 +257,8 @@ u8t ber_decode_oid_item(u8t* ptr, u8t len, u32t* value)
     *value = 0;
     while (i < len) {
         *value = (*value << 7) + (ptr[i] & 0x7F);
-        if (!(ptr[i++] & 0x80)) {
+        i++;
+        if (!(ptr[i] & 0x80)) {
             break;
         }
     }
@@ -657,24 +658,11 @@ s8t ber_encode_pdu(u8t* output, s16t* pos, const u8t* const input, u16t input_le
 {
     /* write in the reverse order */
     if (pdu->error_status == ERROR_STATUS_NO_ERROR) {
-	/* 
-	 * the code below (double while) looks inefficient but for short lists
-	 * it is unbeatable because it doesn't require extra memory
-	 * and it keeps the list unmodified
-	 *
-	 */
-	
-        varbind_list_item_t* ptrLast = NULL;
-
-        while (ptrLast != pdu->varbind_first_ptr) {
-	  /* variable binding list */	
-	  varbind_list_item_t* ptr = pdu->varbind_first_ptr;
-	  
-	  while (ptr && ptr->next_ptr != ptrLast) {
-	    ptr = ptr->next_ptr;
-	  }	 
-	  TRY(ber_encode_var_bind(output, pos, &ptr->varbind));
-	  ptrLast = ptr;
+        /* variable binding list */
+        varbind_list_item_t* ptr = pdu->varbind_first_ptr;
+        while (ptr) {
+            TRY(ber_encode_var_bind(output, pos, &ptr->varbind));
+            ptr = ptr->next_ptr;
         }
         TRY(ber_encode_type_length(output, pos, BER_TYPE_SEQUENCE, max_output_len - *pos));
     } else {
