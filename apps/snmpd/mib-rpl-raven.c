@@ -21,6 +21,9 @@
 #include "net/rpl/rpl.h"
 #include "net/uip-ds6.h"
 
+#define DEBUG DEBUG_FULL
+#include "net/uip-debug.h"
+
 #define AVR_SNMP 1
 
 u32t EncodeTableOID(u8t* ptr, u32t pos, u32t value)
@@ -797,6 +800,18 @@ s8t getRplDodagParentEntry(mib_object_t* object, u8t* oid, u8t len) {
   u8t searchid[16];
   rpl_instance_t *instance;
   rpl_parent_t *currentparent;
+  
+  /*sz*/ 
+  /*To replace dodagParentTable with preferred parent*/
+  /*This is not really the best solution, but it works*/
+  rpl_dag_t *dag;
+  dag = rpl_get_any_dag();
+ 
+  PRINTF("RPL: The preferred parent is ");
+  PRINT6ADDR(&dag->preferred_parent->addr);
+  PRINTF("\n");
+  /*sz*/
+
 
   if (len < 19) {
     return -1;
@@ -823,7 +838,11 @@ s8t getRplDodagParentEntry(mib_object_t* object, u8t* oid, u8t len) {
   }
 
   for (j = 0; j < 16; j++) {
-    if (searchid[j] != currentparent->addr.u8[j]) {
+/*sz*/ 
+/*To replace  dodagParentTable table with preferred parent*/
+    if (searchid[j] != dag->preferred_parent->addr.u8[j]) {
+	//if (searchid[j] != currentparent->addr.u8[j]) {
+/*sz*/
       if (currentparent->next == NULL) {
 	return -1;
       } else {
@@ -857,6 +876,15 @@ ptr_t* getNextOIDRplDodagParentEntry(mib_object_t* object, u8t* oid, u8t len) {
   
   extern rpl_instance_t instance_table[];
   
+/*sz*/ 
+/*To replace  dodagParentTable table with preferred parent*/
+  rpl_dag_t *dag;
+  dag = rpl_get_any_dag();
+  
+  //PRINTF("RPL: The preferred parent is ");
+  //PRINT6ADDR(&dag->preferred_parent->addr);
+/*sz*/
+  
   i = ber_decode_oid_item(oid, len, &oid_el1);
   i = i + ber_decode_oid_item(oid + i, len - i, &oid_el2);
   i = i + ber_decode_oid_item(oid + i, len - i, &oid_el3);
@@ -874,7 +902,11 @@ ptr_t* getNextOIDRplDodagParentEntry(mib_object_t* object, u8t* oid, u8t len) {
 
     /* rplDodagParentID */
     for (j = 0; j < 16; j++) {
-      leng = leng + ber_encoded_oid_item_length(currentparent->addr.u8[j]);
+/*sz*/ 
+/*To replace  dodagParentTable table with preferred parent*/
+	  //leng = leng + ber_encoded_oid_item_length(currentparent->addr.u8[j]);
+      leng = leng + ber_encoded_oid_item_length(dag->preferred_parent->addr.u8[j]);
+/*sz*/
     }
 
     ret = oid_create();
@@ -900,7 +932,11 @@ ptr_t* getNextOIDRplDodagParentEntry(mib_object_t* object, u8t* oid, u8t len) {
     }
     /* Encoding: rplDodagParentID */
     for (j = 0; j < 16; j++) {
-      pos = EncodeTableOID(ret->ptr, pos, currentparent->addr.u8[j]);
+/*sz*/ 
+/*To replace  dodagParentTable table with preferred parent*/
+      //pos = EncodeTableOID(ret->ptr, pos, currentparent->addr.u8[j]);
+      pos = EncodeTableOID(ret->ptr, pos, dag->preferred_parent->addr.u8[j]);
+/*sz*/
       if (pos == -1) {
         return 0;
       }
@@ -919,12 +955,20 @@ ptr_t* getNextOIDRplDodagParentEntry(mib_object_t* object, u8t* oid, u8t len) {
 
     if(oid_el2 < instance_table[0].instance_id && oid_el3 < 1) {
       for (j = 0; j < 16; j++) {
-	leng = leng + ber_encoded_oid_item_length(currentparent->addr.u8[j]);
+/*sz*/ 
+/*To replace  dodagParentTable table with preferred parent*/
+    //leng = leng + ber_encoded_oid_item_length(currentparent->addr.u8[j]);
+	leng = leng + ber_encoded_oid_item_length(dag->preferred_parent->addr.u8[j]);
+/*sz*/
       }      
     } else {    
       while(currentparent->next != NULL) {
 	for (j = 0; j < 16; j++) {
-	  if(currentparent->addr.u8[j] != searchid[j]) {
+/*sz*/ 
+/*To replace  dodagParentTable table with preferred parent*/
+      //if(currentparent->addr.u8[j] != searchid[j]) {
+	  if(dag->preferred_parent->addr.u8[j] != searchid[j]) {
+/*sz*/
 	    break;
 	  }
 	}
@@ -932,7 +976,11 @@ ptr_t* getNextOIDRplDodagParentEntry(mib_object_t* object, u8t* oid, u8t len) {
 	  currentparent = currentparent->next;
 	} else {
 	  for (j = 0; j < 16; j++) {
-	    leng = leng + ber_encoded_oid_item_length(currentparent->addr.u8[j]);
+/*sz*/ 
+/*To replace  dodagParentTable table with preferred parent*/
+        //leng = leng + ber_encoded_oid_item_length(currentparent->addr.u8[j]);
+	    leng = leng + ber_encoded_oid_item_length(dag->preferred_parent->addr.u8[j]);
+/*sz*/
 	  }
 	  break;
 	}
@@ -965,7 +1013,11 @@ ptr_t* getNextOIDRplDodagParentEntry(mib_object_t* object, u8t* oid, u8t len) {
     }
     /* Encoding: rplDodagParentID */
     for (j = 0; j < 16; j++) {
-      pos = EncodeTableOID(ret->ptr, pos, currentparent->addr.u8[j]);
+/*sz*/ 
+/*To replace  dodagParentTable table with preferred parent*/
+      //pos = EncodeTableOID(ret->ptr, pos, currentparent->addr.u8[j]);
+      pos = EncodeTableOID(ret->ptr, pos, dag->preferred_parent->addr.u8[j]);
+/*sz*/
       if (pos == -1) {
         return 0;
       } 
