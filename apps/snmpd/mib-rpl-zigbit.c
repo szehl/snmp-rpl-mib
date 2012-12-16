@@ -131,6 +131,10 @@ static const u8t ber_oid_rplActiveDodag[] PROGMEM                = {0x2b, 0x06, 
 static const ptr_t oid_rplActiveDodag PROGMEM                    = {ber_oid_rplActiveDodag, 14};
 static const u8t ber_oid_rplActiveDodagTriggerSequence[] PROGMEM = {0x2b, 0x06, 0x01, 0x04, 0x01, 0x81, 0xF2, 0x06, 0x01, 0x02, 0x01, 0x02, 0x03, 0x00};
 static const ptr_t oid_rplActiveDodagTriggerSequence PROGMEM     = {ber_oid_rplActiveDodagTriggerSequence, 14};
+/*sz*/
+static const u8t ber_oid_rplActiveDodagPreferredParent[] PROGMEM = {0x2b, 0x06, 0x01, 0x04, 0x01, 0x81, 0xF2, 0x06, 0x01, 0x02, 0x01, 0x02, 0x04, 0x00};
+static const ptr_t oid_rplActiveDodagPreferredParent PROGMEM     = {ber_oid_rplActiveDodagPreferredParent, 14};
+/*sz*/
 
 /* rplStats group */
 static const u8t ber_oid_rplMemOverflows[] PROGMEM               = {0x2b, 0x06, 0x01, 0x04, 0x01, 0x81, 0xF2, 0x06, 0x01, 0x02, 0x01, 0x08, 0x01, 0x00};
@@ -372,6 +376,72 @@ s8t getRplActiveInstance(mib_object_t* object, u8t* oid, u8t len)
   return 0;
 }
 
+/*sz*/
+//Some try to get the preferred dodag parent
+//experimental!
+//works only with printf at the  moment
+
+s8t getRplActiveDodagPreferredParent(mib_object_t* object, u8t* oid, u8t len)
+{
+  rpl_dag_t *dag;
+  dag = rpl_get_any_dag();
+  if (dag == NULL) {
+    return -1;
+  }
+  char array[40];
+  char* prefparaddr;
+  prefparaddr=&array[0];
+  uip_debug_ipaddr_ssprint(&dag->preferred_parent->addr, prefparaddr);
+  
+  printf("\nAußerhalb func: %s\n",prefparaddr);
+  //printf("\n%s\n",&buffer);
+  //printf("\n%s\n",&buffer[0]);
+  
+  object->varbind.value.p_value.ptr = (u8t*)prefparaddr;
+  object->varbind.value.p_value.len = 32;
+  
+  
+  //object->varbind.value.i_value = dag->instance->instance_id;
+  /*sz*/
+  //printf("Prefered Parent addr:");
+  //uip_debug_ipaddr_print(&dag->preferred_parent->addr);
+  //printf("\n!!!!!!!!!!!!\n");
+  /*sz*/
+  return 0;
+}
+
+void uip_debug_ipaddr_ssprint(const uip_ipaddr_t *addr, char* buffer)
+{
+  //char buffer[40];
+  uint16_t a;
+  unsigned int i;
+  int f;
+  for(i = 0, f = 0; i < sizeof(uip_ipaddr_t); i += 2) {
+    a = (addr->u8[i] << 8) + addr->u8[i + 1];
+    if(a == 0 && f >= 0) {
+      if(f++ == 0) {
+        sprintf(buffer + strlen(buffer),"::");
+      }
+    } else {
+      if(f > 0) {
+        f = -1;
+      } else if(i > 0) {
+        sprintf(buffer + strlen(buffer),":");
+      }
+      sprintf(buffer + strlen(buffer),"%x", a);
+    }
+  }
+  printf("innerhalb func: %s\n",buffer);
+  return;
+
+  //sprintf(buffer + strlen(buffer),"%u.%u.%u.%u", addr->u8[0], addr->u8[1], addr->u8[2], addr->u8[3]);
+}
+
+/*sz*/
+
+
+
+
 s8t getRplActiveDodag(mib_object_t* object, u8t* oid, u8t len)
 {
   rpl_dag_t *dag;
@@ -590,6 +660,14 @@ ptr_t* getNextOIDRplInstanceEntry(mib_object_t* object, u8t* oid, u8t len) {
 /*
  * rplDodagTable group
  *
+ * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ * TODO::
+ * Solve problems with get next when using zigbit an SNMPv3, there is an endless get next loop, when using snmpv1 there is no access possibly
+ * code works with raven but not with zigbit
+ * !!!!!!!!!!!!!!!
+ * 
+ * 
+ * 
  * rplDodagTable(5)
  *  +-rplDodagEntry(1) [rplInstanceID,rplDodagIndex]
  *     +- --- Unsigned32            rplDodagIndex(1)
@@ -1560,6 +1638,15 @@ s8t mib_init()
       add_scalar(&oid_rplActiveDodagTriggerSequence, FLAG_ACCESS_READONLY, BER_TYPE_UNSIGNED32, 0, &getRplActiveDodagTriggerSequence, 0) == -1) {
     return -1;
   }
+  
+  
+  
+  /*sz*/
+  if (add_scalar(&oid_rplActiveDodagPreferredParent, FLAG_ACCESS_READONLY, BER_TYPE_OCTET_STRING, 0, &getRplActiveDodagPreferredParent, 0) == -1)
+  {
+    return -1;
+  }
+  /*sz*/
   
   // rplOCPTable group
   if (add_table(&oid_rplOCPEntry, &getRplOCPEntry, &getNextOIDRplOCPEntry, 0) == -1) {
