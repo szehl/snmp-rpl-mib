@@ -828,7 +828,7 @@ void rf230_warm_reset(void) {
 #endif
 
 /*sz*/
-//#ifdef RF230BB_EXTERNAL_PA_ENABLED
+#ifdef RF230BB_EXTERNAL_PA_ENABLED
 /*set external PA in on state, used for @ANY modules*/
 
 uint8_t reg_trx_ctrl_state;
@@ -836,7 +836,7 @@ reg_trx_ctrl_state = hal_register_read(0x04);
 reg_trx_ctrl_state = (reg_trx_ctrl_state) | (0x80);
 hal_register_write(0x04, reg_trx_ctrl_state);
 
-//#endif
+#endif
 /*sz*/
 
 

@@ -202,10 +202,10 @@ void clock_adjust_ticks(clock_time_t howmany);
 /*ATANY Modules Settings*/
 
 /*activate to enable extern PA on 2,4GHz modules from ANS*/
-#define RF230BB_EXTERNAL_PA_ENABLED
+//#define RF230BB_EXTERNAL_PA_ENABLED
 /*activate to test meshed networks*/
-//#define RF230_MAX_TX_POWER 15
-//#define DRF230_MIN_RX_POWER 30
+#define RF230_MAX_TX_POWER 15
+#define DRF230_MIN_RX_POWER 30
 
 /*add one byte to the echo reply (uip6.c)
 used for sending echo request and reply
@@ -224,7 +224,7 @@ in /platform/avr-zigbit/contiki-conf.h */
 
 //#define MAC_CONF_FREQUENCY 0x09 //900MHz
 #define MAC_CONF_FREQUENCY 0x24 //2400MHz
-#define MAC_CONF_NUMBER 0x01
+#define MAC_CONF_NUMBER 0x06
 
 /*
 #for using .sh-script initial value must
