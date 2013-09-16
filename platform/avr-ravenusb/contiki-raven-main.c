@@ -82,6 +82,12 @@
 #include "dev/rs232.h"
 #endif
 
+/*sz*/
+#ifdef AVR_XRAM
+#include "avr-xram.h"
+#endif
+/*sz*/
+
 #include "rndis/rndis_task.h"
 #if USB_CONF_STORAGE
 #include "storage/storage_task.h"
@@ -424,6 +430,13 @@ uint16_t p=(uint16_t)&__bss_end;
   /* Clock */
   clock_init();
 
+  
+  /* XRAM  *//*sz*/
+#ifdef AVR_XRAM
+  xram_enable();
+#endif
+  /*sz*/
+
   /* Leds are referred to by number to prevent any possible confusion :) */
   /* Led0 Blue Led1 Red Led2 Green Led3 Yellow */
   Leds_init();
@@ -440,7 +453,7 @@ uint16_t p=(uint16_t)&__bss_end;
   PRINTD("ADC=%d\n",ADC);
   random_init(ADC);
   ADCSRA=0;                 //Disable ADC
-  
+ 
 #if USB_CONF_RS232
   /* Use rs232 port for serial out (tx, rx, gnd are the three pads behind jackdaw leds */
   rs232_init(RS232_PORT_0, USART_BAUD_57600,USART_PARITY_NONE | USART_STOP_BITS_1 | USART_DATA_BITS_8);
@@ -573,9 +586,9 @@ uint16_t p=(uint16_t)&__bss_end;
   /* There are none in the default build so autostart_processes will be unresolved in the link. */
   /* The AUTOSTART_PROCESSES macro which defines it can only be used in the .co module. */
   /* See /examples/ravenusbstick/ravenusb.c for an autostart template. */
-#if 0
+//#if 0
   autostart_start(autostart_processes);
-#endif
+//#endif
 
 #if ANNOUNCE
 #if USB_CONF_RS232

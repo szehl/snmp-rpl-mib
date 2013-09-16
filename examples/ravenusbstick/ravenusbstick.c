@@ -36,22 +36,51 @@
 #include <avr/pgmspace.h>
 #include <stdio.h>
 #include "contiki.h"
+#include "snmpd.h"
 
 /* Template for autostarting processes.
  * The AUTOSTART_PROCESS macro is enabled by the compiler switch -DAUTOSTART_ENABLE
  * which is applied only to the .co file (this one).
  */
-#if 0
+//#if 0
 
 PROCESS(hello_process, "Hello process");
-AUTOSTART_PROCESSES(&hello_process);
+AUTOSTART_PROCESSES(&hello_process, &snmpd_process); 
 
+
+/*
 PROCESS_THREAD(hello_process, ev, data)
 {
+  static struct etimer myetimer;
   PROCESS_BEGIN();
-
+  etimer_set(&myetimer, CLOCK_SECOND * 2);
   printf_P(PSTR("Hello!\n"));
-  
+  while(1)      // Endlosschleife   
+  {
+	  printf("Hi I am the autostart process()\n");
+      PROCESS_WAIT_UNTIL(etimer_expired(&myetimer)); 
+      etimer_reset(&myetimer);   
+  }
   PROCESS_END();
 }
-#endif
+*/
+//#endif
+
+
+PROCESS_THREAD(hello_process, ev, data)
+ {
+   static struct etimer et;
+   PROCESS_BEGIN();
+   printf("Hi ich bin der Autostartprozess\n");
+   /* Delay 1 second */
+   etimer_set(&et, (CLOCK_SECOND*20));
+ 
+   while(1) {
+     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et));
+     /* Reset the etimer to trig again in 1 second */
+     etimer_reset(&et);
+     printf("I am the Autostart dummy process, calling you every 20 seconds!\n");
+     /* ... */
+   }
+   PROCESS_END();
+ }

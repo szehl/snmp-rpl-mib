@@ -477,4 +477,9 @@ typedef unsigned short uip_stats_t;
 #define CCIF
 #define CLIF
 
+/* ************************************************************************** */
+//#enable external SRAM extension (XRAM) (if not enabled in Makefile)
+/* ************************************************************************** */
+//#define AVR_XRAM
+
 #endif /* __CONTIKI_CONF_H__ */

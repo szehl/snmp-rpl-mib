@@ -13,6 +13,7 @@ USB       = uart_usb_lib.c   \
             usb_drv.c               \
             usb_specific_request.c  \
             usb_standard_request.c  \
+            avr-xram.c				\
             usb_task.c
 
 #Files needed for USB Mass storage device enumeration

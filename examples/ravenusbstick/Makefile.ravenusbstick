@@ -1,11 +1,15 @@
 all: ravenusbstick
-
+APPS=snmpd
 #Define CONTIKI_NO_NET=1 for a passthrough ipv6/6lowpan interface using fakeuip.c
 #Define UIP_CONF_IPV6=1 to include the uip6 stack (for rpl, internal webserver)
 #Do make clean when switching to remove the duplicate library modules
 #CONTIKI_NO_NET=1
 UIP_CONF_IPV6=1
-
+CFLAGS += -Wl,--section-start,.data=0x802100,--defsym=__heap_end=0x80a0ff 
+CFLAGS += -DAUTOSTART_ENABLE
+CFLAGS += -DAVR_XRAM
 CONTIKI = ../..
 
 include $(CONTIKI)/Makefile.include
+
+
