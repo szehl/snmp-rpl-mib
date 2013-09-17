@@ -10,7 +10,7 @@
  *      Sven Zehl <svenzehl@web.de>
  *
  ******************************************************************************/
- 
+#ifdef AVR_XRAM
 #include "avr-xram.h"
 
 /**
@@ -23,4 +23,4 @@ void xram_enable(void)
 	XMCRB = 0;			 	//use all Port C Pins for XRAM Addresses, Port C7 no needed, 
 							//but we don't need it till it is not connected to anything
 }
-
+#endif //AVR_XRAM

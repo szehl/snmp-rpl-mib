@@ -36,16 +36,22 @@
 #include <avr/pgmspace.h>
 #include <stdio.h>
 #include "contiki.h"
+#ifdef WITH_SNMP
 #include "snmpd.h"
+#endif
 
 /* Template for autostarting processes.
  * The AUTOSTART_PROCESS macro is enabled by the compiler switch -DAUTOSTART_ENABLE
  * which is applied only to the .co file (this one).
  */
 //#if 0
+#ifdef WITH_SNMP
 
 PROCESS(hello_process, "Hello process");
+
 AUTOSTART_PROCESSES(&hello_process, &snmpd_process); 
+
+
 
 
 /*
@@ -69,6 +75,7 @@ PROCESS_THREAD(hello_process, ev, data)
 
 PROCESS_THREAD(hello_process, ev, data)
  {
+   kackwurst!
    static struct etimer et;
    PROCESS_BEGIN();
    printf("Hi ich bin der Autostartprozess\n");
@@ -84,3 +91,4 @@ PROCESS_THREAD(hello_process, ev, data)
    }
    PROCESS_END();
  }
+#endif //WITH_SNMP

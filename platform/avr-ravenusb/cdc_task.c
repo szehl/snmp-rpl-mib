@@ -215,6 +215,8 @@ PROCESS_THREAD(cdc_process, ev, data_proc)
 void menu_print(void)
 {
 		PRINTF_P(PSTR("\n\r*********** Jackdaw Menu **********\n\r"));
+		PRINTF_P(PSTR("\r**** Beuth HS Berlin IPv6 Labor ***\n\r"));
+		PRINTF_P(PSTR("\r* wiki.ipv6lab.beuth-hochschule.de*\n\r"));
 		PRINTF_P(PSTR("        [Built "__DATE__"]      \n\r"));
 //		PRINTF_P(PSTR("*                                 *\n\r"));
 		PRINTF_P(PSTR("*  m        Print current mode    *\n\r"));

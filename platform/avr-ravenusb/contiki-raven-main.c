@@ -587,8 +587,9 @@ uint16_t p=(uint16_t)&__bss_end;
   /* The AUTOSTART_PROCESSES macro which defines it can only be used in the .co module. */
   /* See /examples/ravenusbstick/ravenusb.c for an autostart template. */
 //#if 0
+#ifdef WITH_SNMP
   autostart_start(autostart_processes);
-//#endif
+#endif
 
 #if ANNOUNCE
 #if USB_CONF_RS232
